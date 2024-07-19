@@ -219,11 +219,14 @@ export class ClockWeatherCard extends LitElement {
     const icon = this.toIcon(state, iconType, false, this.getIconAnimationKind())
     const weatherString = this.localize(`weather.${state}`)
     const localizedTemp = temp !== null ? this.toConfiguredTempWithUnit(tempUnit, temp) : null
-    const localizedHumidity = humidity !== null ? `${humidity}% ${this.localize('misc.humidity')}` : null
+    //const localizedHumidity = humidity !== null ? `${humidity}% ${this.localize('misc.humidity')}` : null
+    const localizedHumidity = humidity !== null ? `${humidity}%` : null
     const localizedApparent = apparentTemp !== null ? this.toConfiguredTempWithUnit(tempUnit, apparentTemp) : null
     const apparentString = this.localize('misc.feels-like')
     const aqiString = this.localize('misc.aqi')
 
+    //${this.config.hide_clock ? weatherString : localizedTemp ? `${weatherString}, ${localizedTemp}` : weatherString}
+    //${this.config.show_humidity && localizedHumidity ? html`<br>${localizedHumidity}` : ''}
     return html`
       <clock-weather-card-today-left>
         <img class="grow-img" src=${icon} />
@@ -231,8 +234,8 @@ export class ClockWeatherCard extends LitElement {
       <clock-weather-card-today-right>
         <clock-weather-card-today-right-wrap>
           <clock-weather-card-today-right-wrap-top>
-            ${this.config.hide_clock ? weatherString : localizedTemp ? `${weatherString}, ${localizedTemp}` : weatherString}
-            ${this.config.show_humidity && localizedHumidity ? html`<br>${localizedHumidity}` : ''}
+            ${this.config.hide_clock ? weatherString : localizedTemp ? localizedTemp : weatherString}
+            ${this.config.show_humidity && localizedHumidity ? html` | ${localizedHumidity}` : ''}
             ${this.config.apparent_sensor && apparentTemp ? html`<br>${apparentString}: ${localizedApparent}` : ''}
             ${this.config.aqi_sensor && aqi !== null ? html`<br><aqi style="background-color: ${aqiColor}">${aqi} ${aqiString}</aqi>` : ''}
           </clock-weather-card-today-right-wrap-top>
@@ -567,7 +570,8 @@ export class ClockWeatherCard extends LitElement {
 
   private toConfiguredTempWithUnit (unit: TemperatureUnit, temp: number): string {
     const convertedTemp = this.toConfiguredTempWithoutUnit(unit, temp)
-    return convertedTemp + this.getConfiguredTemperatureUnit()
+    return convertedTemp + '°'
+    //return convertedTemp + this.getConfiguredTemperatureUnit()
   }
 
   private toConfiguredTempWithoutUnit (unit: TemperatureUnit, temp: number): number {
